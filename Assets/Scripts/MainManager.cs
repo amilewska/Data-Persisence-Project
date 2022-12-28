@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -12,16 +13,27 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
-    
+
+    //my variables
+    private string playerName;
+    private int score;
+    private string bestPlayer;
+    public Text bestScoreWithName;
+    //my variables
+
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
 
-    
     // Start is called before the first frame update
     void Start()
     {
+        PlayerDataHandler.instance.LoadHighScore();
+        //on the top show the best score to know what to achieve
+        
+
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -70,7 +82,29 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        //AFTER FIRST GAME SAVE POINTS AND SHOW BEST SCORE
         m_GameOver = true;
         GameOverText.SetActive(true);
+        CheckBestPlayer();
     }
+
+    void CheckBestPlayer()
+    {
+        //IF PLAYER BEATS HIGH SCORE, SAVE THEIR NAME AND SCORE
+        if(m_Points > PlayerDataHandler.instance.bestScore)
+        {
+            //set in player data handler the new high score and name of player
+            PlayerDataHandler.instance.bestScore = m_Points;
+            PlayerDataHandler.instance.bestPlayerName = PlayerDataHandler.instance.currentPlayerName;
+
+            //then save this high score and player's name into file
+
+            PlayerDataHandler.instance.SaveHighScore(PlayerDataHandler.instance.bestScore, PlayerDataHandler.instance.bestPlayerName);
+
+            //testing
+            Debug.Log("New high score " + PlayerDataHandler.instance.bestScore);
+
+        }
+    }
+
 }
