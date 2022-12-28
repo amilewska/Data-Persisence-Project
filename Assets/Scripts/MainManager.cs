@@ -52,6 +52,23 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        if (PlayerDataHandler.instance != null)
+        {
+            playerName = PlayerDataHandler.instance.currentPlayerName;
+            bestPlayer = PlayerDataHandler.instance.bestPlayerName;
+            score = PlayerDataHandler.instance.bestScore;
+
+            if (PlayerDataHandler.instance.bestScore != 0)
+            {
+                bestScoreWithName.text = "Hi, " + playerName + "! Can you beat the best score by " + bestPlayer + " : " + score + "?";
+            }
+            else
+            {
+                bestScoreWithName.text = playerName + ", set a high score!";
+            }
+        }
+        else bestScoreWithName.text = "Hello, set a high score!";
+
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
